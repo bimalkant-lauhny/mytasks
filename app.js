@@ -29,6 +29,7 @@ app.get('/', (req, res) => {
     });
 });
 
+// add tasks
 app.post('/task/add', (req, res) => {
     var task = req.body.task;
     client.rpush('tasks', task, (err, reply) => {
@@ -39,6 +40,25 @@ app.post('/task/add', (req, res) => {
 	res.redirect('/');
     });
 });
+
+// delete tasks
+app.post('/task/delete', (req, res) => {
+    var tasksToDelete = req.body.tasks;
+    if (typeof(tasksToDelete) === 'string') {
+	tasksToDelete = [tasksToDelete];
+    }
+    for (let i in tasksToDelete) {
+	client.lrem('tasks', 0, tasksToDelete[i], (err, reply) => {
+    	    if (err) {
+	        console.log(err);
+	    } else {
+	    	console.log('Task Deleted...');
+	    }
+        });
+    } 
+    res.redirect('/');
+});
+
 const PORT = 3000;
 app.listen(PORT);
 console.log(`Server started on port ${PORT}...`)
