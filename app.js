@@ -6,7 +6,7 @@ const redis = require('redis');
 
 const app = express();
 
-var client = redis.createClient();
+let client = redis.createClient();
 client.on('connect', () => {
     console.log('Redis Server Connected ...');
 });
@@ -22,16 +22,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
     client.lrange('tasks', 0, -1, (err, reply) => {
-        res.render('index', {
-            title: 'Task List',
-	    tasks: reply
-    	});
+	client.hgetall('call', (err, call) => {
+            res.render('index', {
+                title: 'Task List',
+	        tasks: reply,
+		call: call 
+	    });
+	});
     });
 });
 
 // add tasks
 app.post('/task/add', (req, res) => {
-    var task = req.body.task;
+    let task = req.body.task;
     client.rpush('tasks', task, (err, reply) => {
         if (err) {
 	    console.log(err);
@@ -43,7 +46,7 @@ app.post('/task/add', (req, res) => {
 
 // delete tasks
 app.post('/task/delete', (req, res) => {
-    var tasksToDelete = req.body.tasks;
+    let tasksToDelete = req.body.tasks;
     if (typeof(tasksToDelete) === 'string') {
 	tasksToDelete = [tasksToDelete];
     }
@@ -57,6 +60,24 @@ app.post('/task/delete', (req, res) => {
         });
     } 
     res.redirect('/');
+});
+
+// add call 
+app.post('/call/add', (req, res) => {
+    let newCall = {
+	name: req.body.name,
+	company: req.body.company,
+	phone: req.body.phone,
+	time: req.body.time
+    };
+    let commandInput = ['name', newCall.name, 'company', newCall.company, 'phone', newCall.phone, 'time', newCall.time];
+    client.hmset('call', commandInput, (err, reply) => {
+        if (err) {
+	    console.log(err);
+	}
+	console.log(reply);
+	res.redirect('/');
+    });
 });
 
 const PORT = 3000;
