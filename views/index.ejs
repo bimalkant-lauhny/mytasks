@@ -1,29 +1,107 @@
-<style>
-    .del:checked + span {
-	color: red;
-    }
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>My Tasks</title>
+        <link rel="stylesheet" href="https://bootswatch.com/4/sketchy/bootstrap.min.css">
+        <style>
+            .del + span {
+                color: #28a745;
+            }
+            .del:checked + span {
+                color: #dc3545;
+            }
 
-    .task-list {
-	list-style: none;
-    }
-</style>
+            .task-list {
+                list-style: none;
+            }
 
-<form method="post" action="/task/add">
-    <label>Add Task</label>
-    <input type="text" name="task" placeholder="Enter Task">
-    <input type="submit" value="Submit">
-</form>
+            input {
+                max-width: 480px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+            <h3 class="display-3">My Tasks</h3>
+        </nav>
 
-<%= title %>
-<form method="post" action="/task/delete">
-    <ul class="task-list">
-	<% tasks.forEach((task) => { %>
-    	    <li>
-		<label>
-		    <input type="checkbox" name="tasks" class="del" value="<%= task %>"> <span><%= task %></span>
-		</label>
-	    </li>
-	<% }) %>
-    </ul>
-    <input type="submit" value="Remove">
-</form>
+        <main role="main" class="container">
+            <div class="jumbotron">
+
+                <form method="post" action="/task/delete">
+                    <legend>Task List</legend>
+                    <div class="form-group">
+                        <ul class="task-list">
+                            <% tasks.forEach((task) => { %>
+                                <li>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="tasks" class="del" value="<%= task %>"> <span><%= task %></span>
+                                        <!--
+                                        <input type="checkbox" class="custom-control-input" name="tasks" value="<%= task %>" id="<%= task %>" checked="">
+                                        <label class="custom-control-label" for="<%= task %>"><%= task %></label>
+                                        -->
+                                    </div>
+                                    <!--
+                                    <label>
+                                    <input type="checkbox" name="tasks" class="del" value="<%= task %>"> <span><%= task %></span>
+                                    </label>
+                                    -->
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                    <input type="submit" class="btn btn-outline-danger" value="Remove">
+                </form>
+            </div>
+
+            <div class="jumbotron">
+                <form method="post" action="/task/add">
+                    <legend>Add Task</legend>
+                    <div class="form-group">
+                        <input type="text" name="task" placeholder="Enter Task" class="form-control" id="add-task">
+                    </div>
+                    <input type="submit" class="btn btn-outline-warning" value="Submit">
+                </form>
+            </div>
+
+            <div class="jumbotron">
+                <legend>Next Business Call</legend>
+                Name: <%= call.name %> <br>
+                Company: <%= call.company %> <br>
+                Phone: <%= call.phone %> <br>
+                Time: <%= call.time %> <br>
+            </div>
+
+            <div class="jumbotron">
+                <legend>Edit Next Call</legend>
+                <form method="post" action="/call/add">
+                    <div class="form-group">
+                        <div class="form-group">
+                          <label class="col-form-label" for="contact">Contact Name</label>
+                          <input type="text" name="name" class="form-control" placeholder="Contact Name" id="contact">
+                        </div>
+                        <div class="form-group">
+                          <label class="col-form-label" for="company">Company</label>
+                          <input type="text" name="company" class="form-control" placeholder="Company" id="company">
+                        </div>
+                        <div class="form-group">
+                          <label class="col-form-label" for="phone">Phone</label>
+                          <input type="text" name="phone" class="form-control" placeholder="Phone" id="Phone">
+                        </div>
+                        <div class="form-group">
+                          <label class="col-form-label" for="time">Day & Time</label>
+                          <input type="text" name="time" class="form-control" placeholder="Time of call" id="time">
+                        </div>
+                    </div>
+                <input type="submit" class="btn btn-outline-warning" value="Submit">
+               </form>
+            </div>
+        </main>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    </body>
+</html>
